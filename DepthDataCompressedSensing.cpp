@@ -15,7 +15,10 @@
 
 using namespace kl1p;
 
-
+#define VECTOR_SIZE 560
+#define MEASUREMENT_RATIO 0.5	// default ratio is 0.5
+#define SPARSITY 0.0142857142857 
+#define INPUT_FILE "hand_right/10.csv" 
 
 
 // ---------------------------------------------------------------------------------------------------- //
@@ -61,27 +64,32 @@ void	kl1p::WriteToCSVFile(const arma::Col<klab::DoubleReal>& signal, const std::
 
 // ---------------------------------------------------------------------------------------------------- //
 
+double kl1p::StringToDouble(const std::string& s)
+{
+	std::istringstream i(s);
+	double x;
+	if (!(i >> x))
+		return 0;
+	return x;
+}
+
+// ---------------------------------------------------------------------------------------------------- //
+
 void	kl1p::ReadFromCSVFile(arma::Col<klab::DoubleReal>& signal, const std::string& filePath)
 {
-	signal.set_size(480 * 640);
+	signal.set_size(VECTOR_SIZE);
 	std::ifstream ifs(filePath.c_str());
 	std::string line;
 	int counter = 0;
-	std::vector<std::string> str_line;
-	std::stringstream ss;
 	double rt;
+	std::vector<std::string> str_line;
 
 	if(ifs.is_open())
 	{	
-		/*
-		for(klab::UInt32 i=0; i<signal.n_rows; ++i)
-			of<<i<<";"<<signal[i]<<std::endl;
-		*/
 		while (getline(ifs, line)) {
 			str_line = kl1p::Split(line, (std::string)";");
-			ss << str_line[1];
-			ss >> rt;
-			signal.insert_rows(counter, rt); 
+			rt = ::atof(str_line[1].c_str());
+			signal(counter) = rt;
 			counter++;
 		}
 
@@ -125,9 +133,9 @@ void	kl1p::RunExample()
 		std::cout<<"from an underdetermined set of linear measurements y=A*x, "<<std::endl;
 		std::cout<<"where A is a random gaussian i.i.d sensing matrix."<<std::endl;
 
-		klab::UInt32 n = 480 * 640;					// Size of the original signal x0.
-		klab::DoubleReal alpha = 0.1;			// Ratio of the cs-measurements.
-		klab::DoubleReal rho = 0.011728515625;				// Ratio of the sparsity of the signal x0.
+		klab::UInt32 n = VECTOR_SIZE;					// Size of the original signal x0.
+		klab::DoubleReal alpha = MEASUREMENT_RATIO;			// Ratio of the cs-measurements.
+		klab::DoubleReal rho = SPARSITY;				// Ratio of the sparsity of the signal x0.
 		klab::UInt32 m = klab::UInt32(alpha*n);	// Number of cs-measurements.
 		klab::UInt32 k = klab::UInt32(rho*n);	// Sparsity of the signal x0 (number of non-zero elements).
 		klab::UInt64 seed = 0;					// Seed used for random number generation (0 if regenerate random numbers on each launch).
@@ -147,7 +155,7 @@ void	kl1p::RunExample()
 				
 		arma::Col<klab::DoubleReal> x0;					// Original signal x0 of size n.
 		//kl1p::CreateGaussianSignal(n, k, 0.0, 1.0, x0);	// Create randomly the original signal x0.
-		kl1p::ReadFromCSVFile(x0, "frame10.csv");
+		kl1p::ReadFromCSVFile(x0, INPUT_FILE);
 		if(bWrite)
 			kl1p::WriteToCSVFile(x0, "OriginalSignal.csv");	// Write x0 to a file.
 

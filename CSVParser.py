@@ -8,11 +8,11 @@ def parse_csv_file(input_file, output_dir, start_frame_num):
 	reader = csv.reader(infile)
 	os.mkdir(output_dir)
 
-	counter = 0
 	row_num = 0
 	non_zero_num = 0
 
 	for row in reader:
+		counter = 0
 		outfile = open(output_dir + "/" + str(row_num) + ".csv", "wb")
 		writer = csv.writer(outfile, delimiter=";")
 
@@ -30,10 +30,10 @@ def parse_csv_file(input_file, output_dir, start_frame_num):
 
 
 if __name__  == "__main__":
-	input_file = "no_movement"
+	input_file = "hand_right"
 	start_frame_num = 10
 	
-	output_dir = input_file
+	output_dir = "/Users/usa/KL1p-0.4.2/bin/macos/" + input_file
 	input_file = "/Users/usa/kinect/OpenNI-Bin-Dev-MacOSX-v1.5.4.0/Samples/bin/x64-Release/%s" % input_file
 	input_file = input_file + ".csv"
 	parse_csv_file(input_file, output_dir, start_frame_num)

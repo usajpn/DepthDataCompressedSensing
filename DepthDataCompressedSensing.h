@@ -16,6 +16,8 @@
 
 #include <KL1pInclude.h>
 #include <string>
+#include <sstream>
+#include <stdlib.h>
 
 namespace kl1p
 {
@@ -34,6 +36,8 @@ void	CreateGaussianSignal(klab::UInt32 size, klab::UInt32 sparsity, klab::Double
 /// @param signal	[in] Signal to write.
 /// @param filePath	[in] Path to the file to create.
 void	WriteToCSVFile(const arma::Col<klab::DoubleReal>& signal, const std::string& filePath);
+
+double	StringToDouble(const std::string& s);
 
 /// Read from csv file.
 /// @param signal	[in] Created Signal.
